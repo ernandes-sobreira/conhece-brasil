@@ -77,6 +77,7 @@
   .ctype.desafio{background:#ffe1e9;color:#b02047}
   .ctype.maisoumenos{background:#d4f3ee;color:#0a7d6e}
   .ctype.nome{background:#ffe7c7;color:#b5650a}
+  .ctype.tema{background:#e3ebff;color:#274bb5}
   .curio{background:#fff7e0;border:1px solid #ffe08a;border-radius:13px;padding:11px 13px;
          margin-top:10px;font-size:14px;line-height:1.4}
   .mom-known{text-align:center;border:2px solid var(--borda);border-radius:16px;padding:14px;background:#f7fbfa}
@@ -207,8 +208,12 @@
         <p>Pergunta rápida com 4 opções sobre estados e cidades do Brasil. Você tem <b>15 segundos</b>! Vale 10 pontos.</p>
       </div>
       <div class="howto-card">
+        <h3>🎯 Carta Qual é? <span class="muted" style="font-weight:600">(fácil)</span></h3>
+        <p>Um tema (violência, saúde, melhor lugar pra viver, riqueza, educação...) e 4 cidades. Qual é o caso? No fim mostramos o <b>ranking real</b> das 4 — prepare-se pro “nossa, não sabia!”. Vale 10 pontos.</p>
+      </div>
+      <div class="howto-card">
         <h3>📊 Carta Mais ou Menos? <span class="muted" style="font-weight:600">(fácil)</span></h3>
-        <p>Mostramos o número de uma cidade. Você adivinha se outra cidade tem <b>MAIS</b> ou <b>MENOS</b>. Rápido e divertido! Vale 10 pontos.</p>
+        <p>Mostramos o número de uma cidade. A outra cidade tem <b>MAIS</b> ou <b>MENOS</b> que ela? Rápido e divertido! Vale 10 pontos.</p>
       </div>
       <div class="howto-card">
         <h3>🤔 Que nome é esse?! <span class="muted" style="font-weight:600">(divertida)</span></h3>
@@ -456,18 +461,19 @@ function nextCard(){
   G.level=levelFor(G.correct);
   renderScore();
   // mistura de cartas por nível (Mais ou Menos é frequente — é a mais leve/divertida)
-  // Mais ou Menos? aparece bastante (é a mais leve/divertida); "nome estranho" em todos os níveis
+  // "Qual é?" (temático) e "Mais ou Menos?" são as estrelas; "nome estranho" entra em todos os níveis
   const byLevel={
-    1:['maisoumenos','maisoumenos','maisoumenos','relampago','nomeestranho','detetive'],
-    2:['maisoumenos','maisoumenos','relampago','detetive','nomeestranho','desafio'],
-    3:['maisoumenos','maisoumenos','detetive','desafio','nomeestranho','desafio']
+    1:['tema','tema','maisoumenos','maisoumenos','nomeestranho','relampago','detetive'],
+    2:['tema','tema','maisoumenos','relampago','detetive','nomeestranho','desafio'],
+    3:['tema','tema','maisoumenos','detetive','desafio','nomeestranho','desafio']
   };
   const pool=byLevel[G.level]||byLevel[1];
   let type=pick(pool);
   if(type===G.last) type=pick(pool); // tenta não repetir a mesma carta seguida
   G.last=type;
-  if(type==='relampago') cardRelampago();
+  if(type==='tema') cardTema();
   else if(type==='maisoumenos') cardMaisOuMenos();
+  else if(type==='relampago') cardRelampago();
   else if(type==='nomeestranho') cardNomeEstranho();
   else if(type==='detetive') cardDetetive();
   else cardDesafio();
@@ -937,12 +943,14 @@ function renderMaisOuMenos(a,b,idx){
     <span class="ctype maisoumenos">📊 Mais ou Menos?</span>
     ${turnHeader()}
     <div class="timer" id="tbar"><i id="tfill"></i></div>
+    <p class="muted" style="text-align:center;margin:2px 0">${escapeHtml(meta.nome)} — ${escapeHtml(meta.unidade)}</p>
     <div class="mom-known">
       <div class="mom-city">${escapeHtml(a.m)} <span class="muted" style="font-size:14px">(${a.u})</span></div>
-      <div class="mom-ind">${escapeHtml(meta.nome)}</div>
+      <div class="mom-ind">tem</div>
       <div class="mom-val">${escapeHtml(fmtVal(va,idx))}</div>
     </div>
-    <div class="q" style="text-align:center;margin:10px 0 2px">E <b>${escapeHtml(b.m)} (${b.u})</b>:<br>tem MAIS ou MENOS ${escapeHtml(meta.nome.toLowerCase())}?</div>
+    <div class="q" style="text-align:center;margin:12px 0 2px">E <b>${escapeHtml(b.m)} (${b.u})</b>?<br>
+      <span style="font-size:16px;color:var(--cinza);font-weight:600">Tem MAIS ou MENOS que ${escapeHtml(a.m)}?</span></div>
     <div class="row">
       <button class="btn azul" id="momMais">⬆️ MAIS</button>
       <button class="btn sec" id="momMenos">⬇️ MENOS</button>
@@ -974,6 +982,83 @@ function answerMOM(chosen,correct,a,b,idx,va,vb,meta){
     {lat:a.lat,lon:a.lon,label:a.m,primary:false},
     {lat:b.lat,lon:b.lon,label:b.m,primary:true}
   ]});
+}
+
+/* =================== CARTA "QUAL É?" (quiz temático) =================== */
+// Cada tema usa um indicador real e uma direção (max = "o maior", min = "o menor").
+const TEMAS=[
+ {emoji:'🏆', idx:C[IPS], dir:'max', q:'Qual é o MELHOR lugar para se viver?', sub:'maior qualidade de vida — IPS'},
+ {emoji:'📉', idx:C[IPS], dir:'min', q:'Qual tem a qualidade de vida MAIS BAIXA?', sub:'menor IPS'},
+ {emoji:'🔫', idx:C['Homicídios'], dir:'max', q:'Qual é a cidade MAIS VIOLENTA?', sub:'maior taxa de homicídios'},
+ {emoji:'🕊️', idx:C['Homicídios'], dir:'min', q:'Qual é a cidade MAIS SEGURA?', sub:'menor taxa de homicídios'},
+ {emoji:'❤️', idx:C['Expectativa de Vida '], dir:'max', q:'Onde as pessoas VIVEM MAIS?', sub:'maior expectativa de vida'},
+ {emoji:'💰', idx:C['PIB PER CAPITA'], dir:'max', q:'Qual é a cidade MAIS RICA?', sub:'maior PIB por pessoa (renda)'},
+ {emoji:'🎓', idx:C['Ideb Ensino Fundamental'], dir:'max', q:'Qual tem a MELHOR EDUCAÇÃO?', sub:'maior nota no IDEB'},
+ {emoji:'📚', idx:C['Nota Mediana no Enem'], dir:'max', q:'Qual tem a MAIOR NOTA no Enem?', sub:'nota mediana do Enem'},
+ {emoji:'👶', idx:C['Mortalidade Infantil até 5 anos'], dir:'min', q:'Onde MENOS bebês morrem?', sub:'menor mortalidade infantil'},
+ {emoji:'🍔', idx:C['Obesidade'], dir:'max', q:'Qual cidade tem MAIS obesidade?', sub:'maior índice de obesidade'},
+ {emoji:'🚰', idx:C['Esgotamento Sanitário Adequado'], dir:'max', q:'Qual tem o MELHOR saneamento?', sub:'mais casas com esgoto tratado'},
+ {emoji:'🏭', idx:C['Emissões de CO₂e por Habitante'], dir:'max', q:'Qual cidade POLUI MAIS?', sub:'maior emissão de CO₂ por pessoa'},
+ {emoji:'💉', idx:C['Cobertura Vacinal (poliomielite)'], dir:'max', q:'Onde MAIS crianças são vacinadas?', sub:'maior cobertura vacinal'},
+ {emoji:'💧', idx:C['Suicídios'], dir:'max', q:'Qual cidade tem MAIS suicídios?', sub:'maior taxa de suicídios'},
+ {emoji:'🤰', idx:C['Gravidez na Adolescência (<19)'], dir:'max', q:'Qual tem MAIS gravidez na adolescência?', sub:'maior índice (<19 anos)'},
+].filter(t=>t.idx!==undefined);
+
+function cardTema(){
+  window.__round=(window.__round||0)+1;
+  ensurePools();
+  const tema=pick(TEMAS);
+  const pool = G.level>=3 ? POOL_MEDIAS : POOL_FAMOSAS;
+  const cities=[];
+  for(let t=0;t<300 && cities.length<4;t++){
+    const m=pick(pool);
+    if(cities.indexOf(m)>=0) continue;
+    if(cities.some(c=>c.i[tema.idx]===m.i[tema.idx])) continue;
+    cities.push(m);
+  }
+  let correct=cities[0];
+  cities.forEach(c=>{ const better = tema.dir==='max' ? c.i[tema.idx]>correct.i[tema.idx] : c.i[tema.idx]<correct.i[tema.idx];
+    if(better) correct=c; });
+  renderTema(tema,cities,correct);
+}
+function renderTema(tema,cities,correct){
+  $('#gamebody').innerHTML=`
+    <span class="ctype tema">🎯 Qual é?</span>
+    ${turnHeader()}
+    <div class="q">${tema.emoji} ${tema.q}</div>
+    <p class="muted" style="margin:-2px 0 2px">${escapeHtml(tema.sub)}</p>
+    <div class="stack" id="opts"></div>
+    <div id="temaResult"></div>`;
+  const ow=$('#opts');
+  cities.forEach((c,i)=>{
+    const b=document.createElement('button'); b.className='opt';
+    b.innerHTML=`<span class="k">${'ABCD'[i]}</span><span>${escapeHtml(c.m)} <span class="muted">(${c.u})</span></span>`;
+    b.onclick=()=>answerTema(c,tema,cities,correct);
+    ow.appendChild(b);
+  });
+}
+function answerTema(chosen,tema,cities,correct){
+  const btns=$('#opts').querySelectorAll('.opt');
+  cities.forEach((c,i)=>{ btns[i].disabled=true;
+    if(c===correct) btns[i].classList.add('correct');
+    else if(c===chosen) btns[i].classList.add('wrong'); });
+  const ok=chosen===correct;
+  if(ok) award(10,true);
+  // ranking real dos 4 (o "nossa, não sabia!")
+  const sorted=cities.slice().sort((a,b)=> tema.dir==='max' ? b.i[tema.idx]-a.i[tema.idx] : a.i[tema.idx]-b.i[tema.idx]);
+  const rk=sorted.map((c,i)=>`<div class="clue"><div><span class="cl-n">${i+1}º ${escapeHtml(c.m)} <span class="muted">(${c.u})</span></span></div>
+      <span class="cl-v">${escapeHtml(fmtVal(c.i[tema.idx],tema.idx))}</span></div>`).join('');
+  $('#temaResult').innerHTML=`<div class="reveal ${ok?'ok':'no'}" style="margin-top:6px">
+      ${ok?'✅ Acertou! <b>+10 pontos</b>':'❌ Não foi dessa vez!'}
+      <div>Resposta: <b>${escapeHtml(correct.m)} (${correct.u})</b></div>
+    </div>
+    <p class="muted" style="margin:10px 0 0;font-weight:700;font-size:13px">📊 Veja todas:</p>
+    <div class="clues" style="margin-top:4px">${rk}</div>
+    ${curiosidadeHTML()}
+    ${mapBlock()}
+    ${continueBar()}`;
+  wireContinue();
+  showMap({cities:cities.map(c=>({lat:c.lat,lon:c.lon,label:c.m,primary:c===correct}))});
 }
 
 /* =================== MAPA (Leaflet online / canvas offline) =================== */
