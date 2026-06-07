@@ -1,0 +1,11 @@
+# Dados de origem e arquivos de build (já embutidos no index.html — não precisam ir pro repositório)
+conhece_brasil_v1*.json
+gamedata.json
+
+# Arquivos de teste/dev locais
+serve.ps1
+.claude/
+
+# Sistema
+Thumbs.db
+.DS_Store
