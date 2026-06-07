@@ -75,6 +75,14 @@
   .ctype.relampago{background:#fff5cc;color:#8a6d00}
   .ctype.detetive{background:#efe6ff;color:#5a18c4}
   .ctype.desafio{background:#ffe1e9;color:#b02047}
+  .ctype.maisoumenos{background:#d4f3ee;color:#0a7d6e}
+  .ctype.nome{background:#ffe7c7;color:#b5650a}
+  .curio{background:#fff7e0;border:1px solid #ffe08a;border-radius:13px;padding:11px 13px;
+         margin-top:10px;font-size:14px;line-height:1.4}
+  .mom-known{text-align:center;border:2px solid var(--borda);border-radius:16px;padding:14px;background:#f7fbfa}
+  .mom-city{font-size:18px;font-weight:800}
+  .mom-ind{color:var(--cinza);font-size:13px;margin-top:2px}
+  .mom-val{font-size:32px;font-weight:800;color:#0a7d6e;margin-top:4px}
   .turn-name{font-size:14px;color:var(--cinza)}
   .turn-name b{color:var(--tinta)}
   .q{font-size:20px;font-weight:800;line-height:1.3}
@@ -135,8 +143,39 @@
 <body>
 <div id="app">
 
+  <!-- ============ CAPA ============ -->
+  <section id="capa" class="screen active">
+    <div class="brand" style="margin-top:26px">
+      <span class="flag">🇧🇷</span>
+      <h1>Conhece-Brasil</h1>
+      <small>Um jogo para descobrir as cidades e os números do nosso país</small>
+    </div>
+    <div class="card-box" style="margin-top:6px">
+      <h2 style="font-size:17px">📊 De onde vêm os dados</h2>
+      <p class="muted" style="font-size:13.5px;margin:4px 0 0">Tudo aqui é <b>real</b> — nenhum número é inventado. Os dados vêm do <b>IPS&nbsp;Brasil&nbsp;2026</b> (Índice de Progresso Social) e do <b>IBGE Localidades 2022</b>, cobrindo os <b>5.570 municípios</b> do Brasil e <b>76 indicadores</b> de qualidade de vida, saúde, educação, segurança e meio ambiente.</p>
+    </div>
+    <div class="stack" style="margin-top:14px">
+      <button id="capaJogar" class="btn">▶️ Jogar</button>
+      <button id="capaCidade" class="btn azul">🔎 Ver minha cidade</button>
+      <button id="capaHowto" class="btn sec">❓ Como jogar</button>
+    </div>
+    <div class="src" style="margin-top:auto">Idealizado por <b>Ernandes Sobreira</b><br>Fonte: IPS Brasil 2026 • IBGE Localidades 2022</div>
+  </section>
+
+  <!-- ============ MINHA CIDADE ============ -->
+  <section id="cidade" class="screen">
+    <h1 style="font-size:24px">🔎 Minha cidade</h1>
+    <p class="muted">Digite o nome da sua cidade e veja os números reais dela — e como ela se compara com o resto do Brasil.</p>
+    <div class="pl-input" style="margin-top:8px">
+      <input id="cidadeBusca" type="text" placeholder="Ex.: Salvador, Petrolina, Bauru..." autocomplete="off">
+    </div>
+    <div id="cidadeLista" class="stack"></div>
+    <div id="cidadeInfo"></div>
+    <button id="cidadeBack" class="btn sec" style="margin-top:auto">⬅️ Voltar</button>
+  </section>
+
   <!-- ============ SETUP ============ -->
-  <section id="setup" class="screen active">
+  <section id="setup" class="screen">
     <div class="brand">
       <span class="flag">🇧🇷</span>
       <h1>Conhece-Brasil</h1>
@@ -164,20 +203,28 @@
     <p class="muted">Vocês jogam juntos, em volta da mesa ou da tela. A cada rodada, um jogador recebe uma carta. Acerte para ganhar pontos!</p>
     <div style="margin-top:10px">
       <div class="howto-card">
-        <h3>⚡ Carta Relâmpago <span class="muted" style="font-weight:600">(nível 1-2)</span></h3>
-        <p>Uma pergunta rápida com 4 opções. Você tem <b>15 segundos</b>! Sobre estados do Brasil. Vale 10 pontos.</p>
+        <h3>⚡ Carta Relâmpago <span class="muted" style="font-weight:600">(fácil)</span></h3>
+        <p>Pergunta rápida com 4 opções sobre estados e cidades do Brasil. Você tem <b>15 segundos</b>! Vale 10 pontos.</p>
       </div>
       <div class="howto-card">
-        <h3>🔍 Carta Detetive <span class="muted" style="font-weight:600">(nível 2-3)</span></h3>
-        <p>Mostramos uma cidade e 5 pistas reais. Sem pressa: debatam e adivinhem a nota de qualidade de vida (IPS). Depois a cidade aparece no mapa! Vale 20 pontos.</p>
+        <h3>📊 Carta Mais ou Menos? <span class="muted" style="font-weight:600">(fácil)</span></h3>
+        <p>Mostramos o número de uma cidade. Você adivinha se outra cidade tem <b>MAIS</b> ou <b>MENOS</b>. Rápido e divertido! Vale 10 pontos.</p>
       </div>
       <div class="howto-card">
-        <h3>🔥 Carta Desafio <span class="muted" style="font-weight:600">(nível 3)</span></h3>
-        <p>Duas cidades são comparadas. Escolha a resposta certa <b>e</b> explique o porquê para ganhar <b>ponto dobrado</b>! O organizador decide.</p>
+        <h3>🤔 Que nome é esse?! <span class="muted" style="font-weight:600">(divertida)</span></h3>
+        <p>Aparece uma cidade real de nome bem estranho (tipo <b>Não-Me-Toque</b> ou <b>Xique-Xique</b>) e você adivinha em que estado ela fica. Depois ela aparece no mapa!</p>
       </div>
       <div class="howto-card">
-        <h3>📈 Níveis</h3>
-        <p>Todo mundo começa no nível 1. A cada <b>5 acertos</b> do grupo, o jogo sobe de nível e fica mais desafiador (até o nível 3).</p>
+        <h3>🔍 Carta Detetive <span class="muted" style="font-weight:600">(médio)</span></h3>
+        <p>Descubra em que <b>estado ou região</b> fica uma cidade, ou adivinhe a nota de qualidade de vida (IPS) pelas pistas. A cidade aparece no mapa! Vale 20 pontos.</p>
+      </div>
+      <div class="howto-card">
+        <h3>🔥 Carta Desafio <span class="muted" style="font-weight:600">(difícil)</span></h3>
+        <p>Duas cidades são comparadas. Acerte <b>e</b> explique o porquê para ganhar <b>ponto dobrado</b>! O organizador decide.</p>
+      </div>
+      <div class="howto-card">
+        <h3>📈 Níveis &amp; curiosidades</h3>
+        <p>Começa no nível 1 com cidades famosas. A cada <b>5 acertos</b> sobe de nível (até o 3) e entram cidades novas. Depois de cada resposta, um <b>“Você sabia?”</b> com um fato real do Brasil.</p>
       </div>
     </div>
     <button id="howtoBack" class="btn" style="margin-top:8px">⬅️ Voltar</button>
@@ -259,6 +306,79 @@ function unShort(u){
           .replace('habitantes','hab.').trim();
 }
 function maiorEhMelhor(idx){ return (DB.meta[DB.codes[idx]]||{}).maior==='melhor'; }
+function norm(s){ return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+
+/* =================== CIDADES CONHECIDAS (por nível) =================== */
+const POP=C['POPULAÇÃO 2025'];
+const CAPITAIS_UF={ 'Rio Branco':'AC','Maceió':'AL','Macapá':'AP','Manaus':'AM','Salvador':'BA',
+  'Fortaleza':'CE','Brasília':'DF','Vitória':'ES','Goiânia':'GO','São Luís':'MA','Cuiabá':'MT',
+  'Campo Grande':'MS','Belo Horizonte':'MG','Belém':'PA','João Pessoa':'PB','Curitiba':'PR',
+  'Recife':'PE','Teresina':'PI','Rio de Janeiro':'RJ','Natal':'RN','Porto Alegre':'RS',
+  'Porto Velho':'RO','Boa Vista':'RR','Florianópolis':'SC','São Paulo':'SP','Aracaju':'SE','Palmas':'TO'};
+let POOL_FAMOSAS=null, POOL_MEDIAS=null;
+function ensurePools(){
+  if(POOL_FAMOSAS) return;
+  const cap=new Set(Object.keys(CAPITAIS_UF).map(n=>n+'|'+CAPITAIS_UF[n]));
+  POOL_FAMOSAS=DB.municipios.filter(m=> m.i[POP]>=250000 || cap.has(m.m+'|'+m.u));
+  POOL_MEDIAS =DB.municipios.filter(m=> m.i[POP]>=40000  || cap.has(m.m+'|'+m.u));
+}
+// nível 1 = só cidades famosas; nível 2 = cidades médias+; nível 3 = qualquer município
+function pickMuniByLevel(level){
+  ensurePools();
+  if(level<=1) return pick(POOL_FAMOSAS);
+  if(level===2) return pick(POOL_MEDIAS);
+  return pick(DB.municipios);
+}
+
+/* =================== CURIOSIDADES ("Você sabia?") =================== */
+const CURIOS=[
+ {k:'maior_ips', t:c=>`${c} tem a MAIOR qualidade de vida (IPS) do Brasil!`, idx:C[IPS]},
+ {k:'menor_ips', t:c=>`${c} tem o menor IPS do Brasil.`, idx:C[IPS]},
+ {k:'mais_populoso', t:c=>`${c} é a cidade mais populosa do Brasil!`, idx:POP},
+ {k:'mais_homicidios', t:c=>`${c} tem a maior taxa de homicídios do país.`, idx:C['Homicídios']},
+ {k:'menos_homicidios', t:c=>`${c} está entre as cidades mais seguras do Brasil.`, idx:C['Homicídios']},
+ {k:'maior_expectativa_vida', t:c=>`Em ${c} as pessoas vivem mais que em qualquer cidade do Brasil!`, idx:C['Expectativa de Vida ']},
+ {k:'menor_expectativa_vida', t:c=>`${c} tem a menor expectativa de vida do país.`, idx:C['Expectativa de Vida ']},
+ {k:'maior_pib_pc', t:c=>`${c} tem o maior PIB por pessoa do Brasil!`, idx:C['PIB PER CAPITA']},
+ {k:'maior_emissao_co2', t:c=>`${c} emite mais CO₂ por pessoa que qualquer cidade do Brasil!`, idx:C['Emissões de CO₂e por Habitante']},
+ {k:'maior_ideb', t:c=>`${c} tem a melhor nota escolar (IDEB) do Brasil!`, idx:C['Ideb Ensino Fundamental']},
+ {k:'menor_ideb', t:c=>`${c} tem a menor nota escolar (IDEB) do país.`, idx:C['Ideb Ensino Fundamental']},
+ {k:'mais_focos_calor', t:c=>`${c} tem o maior número de queimadas do Brasil.`, idx:C['Focos de Calor']},
+ {k:'maior_obesidade', t:c=>`${c} tem o maior índice de obesidade do país.`, idx:C['Obesidade']},
+ {k:'maior_nota_enem', t:c=>`${c} tem a maior nota mediana no Enem do Brasil!`, idx:C['Nota Mediana no Enem']},
+ {k:'maior_gravidez_adolescencia', t:c=>`${c} tem o maior índice de gravidez na adolescência do país.`, idx:C['Gravidez na Adolescência (<19)']},
+];
+// curiosidades a nível de ESTADO (de dados.rankings.estados)
+const CURIOS_UF=[
+ {k:'maior_ips_medio', t:e=>`${e} é o estado com a melhor qualidade de vida (IPS) do Brasil!`, idx:C[IPS]},
+ {k:'menor_ips_medio', t:e=>`${e} é o estado com o menor IPS médio do país.`, idx:C[IPS]},
+ {k:'maior_pib_pc_medio', t:e=>`${e} é o estado mais rico por pessoa (PIB) do Brasil.`, idx:C['PIB PER CAPITA']},
+ {k:'mais_homicidios_medio', t:e=>`${e} é o estado com mais homicídios, em média.`, idx:C['Homicídios']},
+ {k:'menos_homicidios_medio', t:e=>`${e} é um dos estados mais seguros do Brasil.`, idx:C['Homicídios']},
+ {k:'maior_expectativa_vida_media', t:e=>`${e} é o estado onde as pessoas vivem mais, em média!`, idx:C['Expectativa de Vida ']},
+ {k:'maior_emissao_co2_media', t:e=>`${e} é o estado que mais emite CO₂ por pessoa.`, idx:C['Emissões de CO₂e por Habitante']},
+ {k:'maior_ideb_medio', t:e=>`${e} é o estado com a melhor nota escolar (IDEB) do Brasil!`, idx:C['Ideb Ensino Fundamental']},
+ {k:'mais_focos_calor_medio', t:e=>`${e} é o estado com mais queimadas do país.`, idx:C['Focos de Calor']},
+];
+let lastCurio='';
+function curiosidadeHTML(){
+  let html='';
+  for(let tries=0;tries<8;tries++){
+    if(Math.random()<0.35){ // fato de estado
+      const def=pick(CURIOS_UF); const list=DB.rankings.estados[def.k];
+      if(!list||!list[0]) continue; const e=list[0];
+      html=`💡 <b>Você sabia?</b> ${escapeHtml(def.t(UF_NOME[e.uf]||e.uf))} <span class="muted">(${escapeHtml(fmtVal(e.valor,def.idx))})</span>`;
+    } else { // fato de cidade (às vezes o 1º colocado, às vezes alguém do top-5 p/ variar)
+      const def=pick(CURIOS); const list=DB.rankings.municipios[def.k];
+      if(!list||!list[0]) continue;
+      const e=list[0];
+      html=`💡 <b>Você sabia?</b> ${escapeHtml(def.t(e.municipio+'-'+e.uf))} <span class="muted">(${escapeHtml(fmtVal(e.valor,def.idx))})</span>`;
+    }
+    if(html && html!==lastCurio) break;
+  }
+  lastCurio=html;
+  return html ? `<div class="curio">${html}</div>` : '';
+}
 
 /* =================== ESTADO DO JOGO =================== */
 let G=null;
@@ -297,8 +417,12 @@ function renumber(){
 }
 addPlayerRow(''); addPlayerRow('');
 $('#addP').onclick=()=>addPlayerRow('');
-$('#toHowto').onclick=()=>{ G && G.players ? show('howto') : (window.__fromSetup=true, show('howto')); };
-$('#howtoBack').onclick=()=>show(window.__inGame?'game':'setup');
+$('#toHowto').onclick=()=>{ window.__howtoFrom='setup'; show('howto'); };
+$('#howtoBack').onclick=()=>show(window.__inGame?'game':(window.__howtoFrom||'capa'));
+// --- capa (tela inicial) ---
+$('#capaJogar').onclick=()=>show('setup');
+$('#capaHowto').onclick=()=>{ window.__howtoFrom='capa'; show('howto'); };
+$('#capaCidade').onclick=()=>openCidade();
 $('#start').onclick=()=>{
   const names=[...playersEl.querySelectorAll('input')].map((i,k)=>i.value.trim()||('Jogador '+(k+1)));
   const clean=[]; [...playersEl.querySelectorAll('input')].forEach((i,k)=>{
@@ -331,16 +455,20 @@ function nextCard(){
   clearTimer();
   G.level=levelFor(G.correct);
   renderScore();
-  // escolhe tipo conforme nível
-  let type;
-  if(G.level===1) type='relampago';
-  else if(G.level===2) type = Math.random()<0.5?'relampago':'detetive';
-  else type = Math.random()<0.5?'detetive':'desafio';
-  if(type===G.last && Math.random()<0.5){ // pequena variação p/ não repetir igual
-    if(G.level>=2 && type==='relampago') type='detetive';
-  }
+  // mistura de cartas por nível (Mais ou Menos é frequente — é a mais leve/divertida)
+  // Mais ou Menos? aparece bastante (é a mais leve/divertida); "nome estranho" em todos os níveis
+  const byLevel={
+    1:['maisoumenos','maisoumenos','maisoumenos','relampago','nomeestranho','detetive'],
+    2:['maisoumenos','maisoumenos','relampago','detetive','nomeestranho','desafio'],
+    3:['maisoumenos','maisoumenos','detetive','desafio','nomeestranho','desafio']
+  };
+  const pool=byLevel[G.level]||byLevel[1];
+  let type=pick(pool);
+  if(type===G.last) type=pick(pool); // tenta não repetir a mesma carta seguida
   G.last=type;
   if(type==='relampago') cardRelampago();
+  else if(type==='maisoumenos') cardMaisOuMenos();
+  else if(type==='nomeestranho') cardNomeEstranho();
   else if(type==='detetive') cardDetetive();
   else cardDesafio();
 }
@@ -486,6 +614,7 @@ function answerRel(chosen,correctIndex,opts,valStr,mapSpec){
       ${ok?'✅ Acertou! <b>+10 pontos</b>':(chosen===-1?'⏰ Tempo esgotado!':'❌ Quase!')}
       <div class="muted" style="margin-top:4px">Resposta: <b>${escapeHtml(opts[correctIndex])}</b> — ${escapeHtml(valStr)}</div>
     </div>
+    ${curiosidadeHTML()}
     ${mapBlock()}
     ${continueBar()}`;
   wireContinue();
@@ -510,7 +639,7 @@ const REGIOES=['Norte','Nordeste','Centro-Oeste','Sudeste','Sul'];
 // a maioria; o desafio de adivinhar o IPS pelas pistas (difícil) é só "algumas".
 function cardDetetive(){
   window.__round=(window.__round||0)+1;
-  const m=pick(DB.municipios);
+  const m=pickMuniByLevel(G.level); // cidades conhecidas nos níveis fáceis
   const r=Math.random();
   if(r<0.45) detEstado(m);
   else if(r<0.72) detRegiao(m);
@@ -535,6 +664,32 @@ function detRegiao(m){
     sub:'As 5 regiões do Brasil: Norte, Nordeste, Centro-Oeste, Sudeste e Sul.',
     reveal:`<b>${escapeHtml(m.m)}</b> fica na região <span class="big">${escapeHtml(correct)}</span>.`});
 }
+// ---- carta especial: cidade de nome estranho — adivinhe o estado (divertido) ----
+const NOMES_ESTRANHOS=['Não-Me-Toque|RS','Xique-Xique|BA','Pindamonhangaba|SP','Itaquaquecetuba|SP',
+ 'Quixeramobim|CE','Serra da Saudade|MG','Tio Hugo|RS','Biritiba Mirim|SP','Embu-Guaçu|SP','Ji-Paraná|RO',
+ 'Pau dos Ferros|RN','Cacimba de Dentro|PB','Jacareacanga|PA','Wenceslau Guimarães|BA','Caarapó|MS',
+ 'Combinado|TO','Saudades|SC','Pancas|ES','Quatá|SP','Tabatinga|AM','Ubá|MG','Brejo da Madre de Deus|PE',
+ 'Pindaí|BA','Pindoba|AL','Tremembé|SP','Conchas|SP','Cananéia|SP','Pirapora|MG','Tangará da Serra|MT',
+ 'Tunas do Paraná|PR','Coqueiro Baixo|RS','Gentio do Ouro|BA','Rio do Antônio|BA',"Olho d'Água|PB",
+ 'Cabaceiras|PB','Bananeiras|PB','Araçariguama|SP','Riachão das Neves|BA','Engenheiro Beltrão|PR',
+ 'Buriti dos Lopes|PI','Mococa|SP','Sertãozinho|SP'];
+let POOL_ESTRANHOS=null;
+function pickEstranho(){
+  if(!POOL_ESTRANHOS) POOL_ESTRANHOS=NOMES_ESTRANHOS.map(s=>{const p=s.split('|');return findMuni(p[0],p[1]);}).filter(Boolean);
+  return pick(POOL_ESTRANHOS);
+}
+function cardNomeEstranho(){
+  window.__round=(window.__round||0)+1;
+  const m=pickEstranho();
+  const correct=UF_NOME[m.u];
+  const {opts,correctIndex}=buildOptions(correct, Object.values(UF_NOME));
+  renderDetGeo({m, opts, correctIndex,
+    chipClass:'nome', chipLabel:'🤔 Que nome é esse?!',
+    titulo:`Esta cidade existe de verdade: <b>${escapeHtml(m.m)}</b>!`,
+    sub:`Em que estado fica ${escapeHtml(m.m)}?`,
+    reveal:`<b>${escapeHtml(m.m)}</b> fica mesmo em <span class="big">${escapeHtml(correct)}</span> (${m.u})! 😄`});
+}
+
 // ---- subtipo: adivinhe o IPS pelas pistas (difícil; só algumas) ----
 function detIps(m){
   const v=m.i[C[IPS]];
@@ -561,7 +716,7 @@ function dossierHTML(m, n, exclude){
 function renderDetGeo(o){
   const m=o.m;
   $('#gamebody').innerHTML=`
-    <span class="ctype detetive">🔍 Carta Detetive</span>
+    <span class="ctype ${o.chipClass||'detetive'}">${o.chipLabel||'🔍 Carta Detetive'}</span>
     ${turnHeader()}
     <div class="q">${o.titulo}</div>
     <p class="muted" style="margin:-2px 0 2px">Ficha da cidade:</p>
@@ -589,6 +744,7 @@ function answerDetGeo(chosen,o){
       ${ok?'✅ Mandou bem! <b>+20 pontos</b>':'❌ Não foi dessa vez!'}
       <div>${o.reveal}</div>
     </div>
+    ${curiosidadeHTML()}
     ${mapBlock()}
     ${continueBar()}`;
   wireContinue();
@@ -636,6 +792,7 @@ function answerDet(chosen,correctIndex,m,v,bands){
       ${ok?'✅ Boa investigação! <b>+20 pontos</b>':'❌ Não foi dessa vez!'}
       <div>O IPS de ${escapeHtml(m.m)} é <span class="big">${(Math.round(v*10)/10).toLocaleString('pt-BR')}</span> pontos.</div>
     </div>
+    ${curiosidadeHTML()}
     ${mapBlock()}
     ${continueBar()}`;
   wireContinue();
@@ -654,10 +811,10 @@ const DES_IND=[
 function cardDesafio(){
   window.__round=(window.__round||0)+1;
   const idx=pick(DES_IND);
-  // tenta achar duas cidades com diferença relevante; às vezes usa um extremo
+  // tenta achar duas cidades (conhecidas conforme o nível) com diferença relevante
   let a,b;
   for(let tries=0;tries<40;tries++){
-    a=pick(DB.municipios); b=pick(DB.municipios);
+    a=pickMuniByLevel(G.level); b=pickMuniByLevel(G.level);
     if(a===b) continue;
     const va=a.i[idx], vb=b.i[idx];
     if(va===vb) continue;
@@ -716,6 +873,7 @@ function revealDesafio(chosen,correct,a,b,idx,va,vb,melhorMaior){
         ${escapeHtml(a.m)}: <b>${escapeHtml(fmtVal(va,idx))}</b> &nbsp;•&nbsp;
         ${escapeHtml(b.m)}: <b>${escapeHtml(fmtVal(vb,idx))}</b></div>
     </div>
+    ${curiosidadeHTML()}
     ${mapBlock()}`;
   showMap({cities:[
     {lat:a.lat,lon:a.lon,label:a.m,primary:correct==='A'},
@@ -749,6 +907,73 @@ function revealDesafio(chosen,correct,a,b,idx,va,vb,melhorMaior){
   if(jd) jd.onclick=()=>finish(40,true);
   if(js) js.onclick=()=>finish(20,true);
   if(jz) jz.onclick=()=>finish(0,false);
+}
+
+/* =================== CARTA MAIS OU MENOS? =================== */
+const MOM_IND=[ C[IPS], C['Expectativa de Vida '], C['Homicídios'], C['PIB PER CAPITA'],
+  C['Ideb Ensino Fundamental'], C['Obesidade'], C['Nota Mediana no Enem'],
+  C['Emissões de CO₂e por Habitante'], C['POPULAÇÃO 2025'], C['Esgotamento Sanitário Adequado'] ];
+
+function cardMaisOuMenos(){
+  window.__round=(window.__round||0)+1;
+  ensurePools();
+  const idx=pick(MOM_IND);
+  const poolA = G.level>=3 ? POOL_MEDIAS : POOL_FAMOSAS; // cidades conhecidas
+  let a,b;
+  for(let t=0;t<60;t++){
+    a=pick(poolA); b=pick(poolA);
+    if(a===b) continue;
+    const va=a.i[idx], vb=b.i[idx]; if(va===vb) continue;
+    const big=Math.max(Math.abs(va),Math.abs(vb))||1;
+    if(Math.abs(va-vb)/big>0.06) break; // diferença perceptível
+  }
+  renderMaisOuMenos(a,b,idx);
+}
+function renderMaisOuMenos(a,b,idx){
+  const meta=DB.meta[DB.codes[idx]];
+  const va=a.i[idx], vb=b.i[idx];
+  const correct = vb>va ? 'mais' : 'menos';
+  $('#gamebody').innerHTML=`
+    <span class="ctype maisoumenos">📊 Mais ou Menos?</span>
+    ${turnHeader()}
+    <div class="timer" id="tbar"><i id="tfill"></i></div>
+    <div class="mom-known">
+      <div class="mom-city">${escapeHtml(a.m)} <span class="muted" style="font-size:14px">(${a.u})</span></div>
+      <div class="mom-ind">${escapeHtml(meta.nome)}</div>
+      <div class="mom-val">${escapeHtml(fmtVal(va,idx))}</div>
+    </div>
+    <div class="q" style="text-align:center;margin:10px 0 2px">E <b>${escapeHtml(b.m)} (${b.u})</b>:<br>tem MAIS ou MENOS ${escapeHtml(meta.nome.toLowerCase())}?</div>
+    <div class="row">
+      <button class="btn azul" id="momMais">⬆️ MAIS</button>
+      <button class="btn sec" id="momMenos">⬇️ MENOS</button>
+    </div>
+    <div id="momResult"></div>`;
+  $('#momMais').onclick=()=>answerMOM('mais',correct,a,b,idx,va,vb,meta);
+  $('#momMenos').onclick=()=>answerMOM('menos',correct,a,b,idx,va,vb,meta);
+  let t=15; const fill=$('#tfill'), bar=$('#tbar'); fill.style.width='100%';
+  timerId=setInterval(()=>{ t--; fill.style.width=(t/15*100)+'%';
+    if(t<=5) bar.classList.add('warn');
+    if(t<=0){ clearTimer(); answerMOM('',correct,a,b,idx,va,vb,meta); } },1000);
+}
+function answerMOM(chosen,correct,a,b,idx,va,vb,meta){
+  clearTimer();
+  $('#momMais').disabled=true; $('#momMenos').disabled=true;
+  const ok = chosen===correct;
+  if(ok) award(10,true);
+  $('#momResult').innerHTML=`<div class="reveal ${ok?'ok':'no'}" style="margin-top:10px">
+      ${ok?'✅ Acertou! <b>+10 pontos</b>':(chosen===''?'⏰ Tempo esgotado!':'❌ Errou!')}
+      <div class="muted" style="margin-top:4px">
+        ${escapeHtml(a.m)}: <b>${escapeHtml(fmtVal(va,idx))}</b> &nbsp;•&nbsp;
+        ${escapeHtml(b.m)}: <b>${escapeHtml(fmtVal(vb,idx))}</b></div>
+    </div>
+    ${curiosidadeHTML()}
+    ${mapBlock()}
+    ${continueBar()}`;
+  wireContinue();
+  showMap({cities:[
+    {lat:a.lat,lon:a.lon,label:a.m,primary:false},
+    {lat:b.lat,lon:b.lon,label:b.m,primary:true}
+  ]});
 }
 
 /* =================== MAPA (Leaflet online / canvas offline) =================== */
@@ -888,6 +1113,49 @@ function endGame(){
 }
 $('#again').onclick=()=>{ newGame(G.players); window.__inGame=true; show('game'); window.__round=0; nextCard(); };
 $('#newPlayers').onclick=()=>{ show('setup'); };
+
+/* =================== MINHA CIDADE =================== */
+// % de cidades que esta cidade supera neste indicador (considera se "maior é melhor")
+function cityPctBetter(idx,m){
+  const v=m.i[idx], better=maiorEhMelhor(idx); let worse=0;
+  for(const x of DB.municipios){ const xv=x.i[idx]; if(better? xv<v : xv>v) worse++; }
+  return Math.round(worse/DB.municipios.length*100);
+}
+const buscaEl=$('#cidadeBusca'), listaEl=$('#cidadeLista'), infoEl=$('#cidadeInfo');
+function openCidade(){ buscaEl.value=''; listaEl.innerHTML=''; infoEl.innerHTML=''; show('cidade');
+  setTimeout(()=>buscaEl.focus(),120); }
+$('#cidadeBack').onclick=()=>show('capa');
+buscaEl.addEventListener('input',()=>{
+  const q=norm(buscaEl.value.trim()); infoEl.innerHTML='';
+  if(q.length<2){ listaEl.innerHTML=''; return; }
+  const matches=DB.municipios.filter(m=>norm(m.m).includes(q))
+    .sort((a,b)=>{ const sa=norm(a.m).startsWith(q)?0:1, sb=norm(b.m).startsWith(q)?0:1;
+      return sa-sb || b.i[POP]-a.i[POP]; }).slice(0,8);
+  listaEl.innerHTML='';
+  if(!matches.length){ listaEl.innerHTML='<p class="muted">Nenhuma cidade encontrada.</p>'; return; }
+  matches.forEach(m=>{ const b=document.createElement('button'); b.className='opt';
+    b.innerHTML=`<span>${escapeHtml(m.m)} <span class="muted">(${m.u})</span></span>`;
+    b.onclick=()=>renderCidade(m); listaEl.appendChild(b); });
+});
+function renderCidade(m){
+  listaEl.innerHTML='';
+  const inds=[C[IPS],C['Expectativa de Vida '],C['Homicídios'],C['Ideb Ensino Fundamental'],
+              C['Esgotamento Sanitário Adequado'],C['Nota Mediana no Enem']];
+  let rows='';
+  inds.forEach(idx=>{ const meta=DB.meta[DB.codes[idx]]; const p=cityPctBetter(idx,m);
+    rows+=`<div class="clue"><div><span class="cl-n">${escapeHtml(meta.nome)}</span>
+        <span class="cl-s">melhor que ${p}% das cidades do Brasil</span></div>
+      <span class="cl-v">${escapeHtml(fmtVal(m.i[idx],idx))}</span></div>`; });
+  infoEl.innerHTML=`
+    <div class="card-box" style="margin-top:12px">
+      <h2 style="font-size:20px;margin-bottom:0">${escapeHtml(m.m)} <span class="muted" style="font-size:15px">(${m.u} • ${m.r})</span></h2>
+      <p class="muted" style="margin:2px 0 10px">${escapeHtml(fmtVal(m.i[POP],POP))} • IPS ${(Math.round(m.i[C[IPS]]*10)/10).toLocaleString('pt-BR')} pontos</p>
+      <div class="clues">${rows}</div>
+    </div>
+    ${mapBlock()}`;
+  showMap({cities:[{lat:m.lat,lon:m.lon,label:m.m,primary:true}]});
+  infoEl.scrollIntoView({block:'nearest'});
+}
 
 window.addEventListener('resize',()=>{
   if($('#mapcanvas') && $('#mapcanvas').style.display==='block'){ /* redesenho opcional */ }
